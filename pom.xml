@@ -410,7 +410,7 @@
             -->
             <id>test-derby</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             <property>
                 <name>test-derby</name>
             </property>
@@ -2074,32 +2074,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.1.0</version>
-                    <executions>
-                        <execution>
-                            <id>default-jar</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                            <configuration>
-                                <archive>
-                                    <manifest>
-                                       <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                    </manifest>
-                                    <manifestEntries>
-                                        <Implementation-Build>${buildNumber}</Implementation-Build>
-                                        <Implementation-Date>${timestamp}</Implementation-Date>
-                                        <Automatic-Module-Name>${automatic-module-name}</Automatic-Module-Name>
-                                    </manifestEntries>
-                                </archive>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>attach-tests</id>
-                            <goals>
-                                <goal>test-jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
