@@ -35,6 +35,11 @@
   <packaging>jar</packaging>
   <name>OpenJPA Kubernetes</name>
 
+  <properties>
+    <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.apache.openjpa</groupId>
