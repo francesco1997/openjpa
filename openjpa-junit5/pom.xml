@@ -34,7 +34,9 @@
 
     <properties>
         <automatic-module-name>org.apache.openjpa.junit5</automatic-module-name>
+        <!--
         <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+        -->
     </properties>
 
     <dependencies>

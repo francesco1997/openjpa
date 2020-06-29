@@ -37,7 +37,9 @@
 
     <properties>
         <automatic-module-name>org.apache.openjpa.jest</automatic-module-name>
+        <!--
         <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+        -->
     </properties>
     <dependencies>
         <dependency>

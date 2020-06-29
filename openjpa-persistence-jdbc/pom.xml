@@ -37,7 +37,9 @@
 
     <properties>
         <automatic-module-name>org.apache.openjpa.persistence.jdbc</automatic-module-name>
+        <!--
         <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+        -->
     </properties>
     <profiles>
         <!-- Profile for testing with test-dynamic-enhancer -->

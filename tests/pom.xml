@@ -18,11 +18,13 @@
   <name>Tests</name>
 
   <dependencies>
+    <!--
     <dependency>
       <groupId>org.apache.openjpa</groupId>
       <artifactId>openjpa-jdbc</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.openjpa</groupId>
       <artifactId>openjpa-jest</artifactId>
@@ -33,11 +35,13 @@
       <artifactId>openjpa-junit5</artifactId>
       <version>${project.version}</version>
     </dependency>
+    -->
     <dependency>
       <groupId>org.apache.openjpa</groupId>
       <artifactId>openjpa-kernel</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!--
     <dependency>
       <groupId>org.apache.openjpa</groupId>
       <artifactId>openjpa-kubernetes</artifactId>
@@ -63,6 +67,7 @@
       <artifactId>openjpa-xmlstore</artifactId>
       <version>${project.version}</version>
     </dependency>
+    -->
   </dependencies>
 
   <build>
