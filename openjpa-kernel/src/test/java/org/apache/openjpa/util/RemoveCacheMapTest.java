@@ -28,12 +28,18 @@ public class RemoveCacheMapTest {
     private Object value;
     private CacheMap cacheMap;
     private boolean hasPreviousValue;
+    private boolean pinned;
+    private Integer cachedMaxMapSize;
+    private Integer numObjectToInsert;
 
 
     public RemoveCacheMapTest(TestInput testInput) {
         this.key = testInput.getKey();
         this.value = testInput.getValue();
         this.hasPreviousValue = testInput.isAlreadyExist();
+        this.pinned = testInput.isPinned();
+        this.cachedMaxMapSize = testInput.getCacheMaxMapSize();
+        this.numObjectToInsert = testInput.getNumObjectToInsert();
         if (this.hasPreviousValue) {
             this.value = new Object();
         } else {
@@ -46,11 +52,11 @@ public class RemoveCacheMapTest {
     public static Collection<TestInput> getParameters(){
         List<TestInput> testInputs = new ArrayList<>();
 
-        testInputs.add(new TestInput(null, null, false));
-        testInputs.add(new TestInput(new Object(), null, false));
-        testInputs.add(new TestInput(new Object(), new Object(), false));
-        testInputs.add(new TestInput(new Object(), new Object(), true));
-        testInputs.add(new TestInput(new Object(), null, true));
+        testInputs.add(new TestInput(null, null, false, false, 1, 0));
+        testInputs.add(new TestInput(new Object(), null, false, true, 1, 0));
+        testInputs.add(new TestInput(new Object(), new Object(), true, true, 0, 0));
+        testInputs.add(new TestInput(new Object(), new Object(), true, false, 1,1));
+        testInputs.add(new TestInput(new Object(), null, true, false, 2, 1));
         return testInputs;
 
     }
@@ -59,12 +65,17 @@ public class RemoveCacheMapTest {
         private Object key;
         private Object value;
         private boolean alreadyExist;
+        private boolean pinned;
+        private Integer cacheMaxMapSize;
+        private Integer numObjectToInsert;
 
-
-        public TestInput(Object key, Object value, boolean alreadyExist) {
+        public TestInput(Object key, Object value, boolean alreadyExist, boolean pinned, Integer cacheMaxMapSize, Integer numObjectToInsert) {
             this.key = key;
             this.value = value;
             this.alreadyExist = alreadyExist;
+            this.pinned = pinned;
+            this.cacheMaxMapSize = cacheMaxMapSize;
+            this.numObjectToInsert = numObjectToInsert;
         }
 
         public Object getKey() {
@@ -79,14 +90,34 @@ public class RemoveCacheMapTest {
             return alreadyExist;
         }
 
+        public boolean isPinned() {
+            return pinned;
+        }
+
+        public Integer getCacheMaxMapSize() {
+            return cacheMaxMapSize;
+        }
+
+        public Integer getNumObjectToInsert() {
+            return numObjectToInsert;
+        }
     }
 
     @Before
     public void setUp() {
-        this.cacheMap = new CacheMap(true);
+        this.cacheMap = new CacheMap(true, this.cachedMaxMapSize, this.cachedMaxMapSize + 1, 1L, 1);
+        if (this.pinned) {
+            this.cacheMap.pin(this.key);
+        }
+
         if (this.hasPreviousValue) {
             this.cacheMap.put(this.key, this.value);
         }
+        for (int i = 0; i < this.numObjectToInsert; i++) {
+            this.cacheMap.put(new Object(), new Object());
+        }
+
+
     }
 
     @Test
