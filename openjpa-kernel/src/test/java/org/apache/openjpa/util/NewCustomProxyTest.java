@@ -1,6 +1,7 @@
 package org.apache.openjpa.util;
 
 import org.apache.openjpa.util.support.BeanClass;
+import org.apache.openjpa.util.support.FinalClass;
 import org.apache.openjpa.util.support.NonBeanClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 @RunWith(Parameterized.class)
@@ -31,10 +33,48 @@ public class NewCustomProxyTest {
 
         testInputs.add(new TestInput(null, true, true));
         testInputs.add(new TestInput(new NonBeanClass(r.nextInt(), r.nextInt()), false,true));
+        testInputs.add(new TestInput(new FinalClass(), true, true));
 
         BeanClass beanClass = new BeanClass();
         beanClass.setValue(r.nextInt());
         testInputs.add(new TestInput(beanClass, true,false));
+
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(r.nextInt(), r.nextInt());
+        map.put(r.nextInt(), r.nextInt());
+        map.put(r.nextInt(), r.nextInt());
+
+        testInputs.add(new TestInput(map, true, false));
+
+        Map<Integer, Integer> sortedMap = new TreeMap<>();
+        sortedMap.put(r.nextInt(), r.nextInt());
+        sortedMap.put(r.nextInt(), r.nextInt());
+        sortedMap.put(r.nextInt(), r.nextInt());
+
+        testInputs.add(new TestInput(sortedMap, true, false));
+
+        Set<Integer> sortedSet = new TreeSet<>();
+        sortedSet.add(r.nextInt());
+        sortedSet.add(r.nextInt());
+        sortedSet.add(r.nextInt());
+
+        testInputs.add(new TestInput(sortedSet, false, false));
+
+        testInputs.add(new TestInput(new Date(), false, false));
+
+        testInputs.add(new TestInput(new GregorianCalendar(), false, false));
+
+        Proxy proxy = new ProxyManagerImpl().newDateProxy(Date.class);
+        testInputs.add(new TestInput(proxy, true, false));
+
+        List<Integer> list = new ArrayList<>();
+
+        list.add(r.nextInt());
+        list.add(r.nextInt());
+        list.add(r.nextInt());
+
+        testInputs.add(new TestInput(list, true, false));
+        testInputs.add(new TestInput(new Timestamp(System.currentTimeMillis()), false, false));
 
         return testInputs;
 
