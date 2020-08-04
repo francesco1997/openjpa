@@ -18,11 +18,13 @@ public class NewCustomProxyTest {
     private ProxyManagerImpl proxyManager;
     private Object object;
     private boolean autoOff;
+    private String unproxyable;
     private boolean resultNull;
 
     public NewCustomProxyTest(TestInput testInput) {
         this.object = testInput.getObject();
         this.autoOff = testInput.isAutoOff();
+        this.unproxyable = testInput.getUnproxyable();
         this.resultNull = testInput.isResultNull();
     }
 
@@ -76,6 +78,11 @@ public class NewCustomProxyTest {
         testInputs.add(new TestInput(list, true, false));
         testInputs.add(new TestInput(new Timestamp(System.currentTimeMillis()), false, false));
 
+        BeanClass unproxyableClass = new BeanClass();
+        unproxyableClass.setValue(r.nextInt());
+        testInputs.add(new TestInput(unproxyableClass, false, BeanClass.class.getName(),true));
+
+
         return testInputs;
 
     }
@@ -83,14 +90,20 @@ public class NewCustomProxyTest {
     private static class TestInput {
         private Object object;
         private boolean autoOff;
+        private String unproxyable;
         private boolean resultNull;
 
         public TestInput(Object object, boolean autoOff, boolean resultNull) {
             this.object = object;
             this.autoOff = autoOff;
+            this.unproxyable = "";
             this.resultNull = resultNull;
 
+        }
 
+        public TestInput(Object object, boolean autoOff, String unproxyable,boolean resultNull) {
+            this(object, autoOff, resultNull);
+            this.unproxyable = unproxyable;
         }
 
         public Object getObject() {
@@ -101,6 +114,10 @@ public class NewCustomProxyTest {
             return autoOff;
         }
 
+        public String getUnproxyable() {
+            return unproxyable;
+        }
+
         public boolean isResultNull() {
             return resultNull;
         }
@@ -109,6 +126,7 @@ public class NewCustomProxyTest {
     @Before
     public void setUp(){
         this.proxyManager = new ProxyManagerImpl();
+        this.proxyManager.setUnproxyable(this.unproxyable);
     }
 
     @Test
