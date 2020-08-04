@@ -162,6 +162,46 @@
     </build>
     <profiles>
         <profile>
+            <id>pit-test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>1.5.2</version>
+                        <configuration>
+                            <targetClasses>
+                                <param>org.apache.openjpa.util.CacheMap</param>
+                                <param>org.apache.openjpa.util.ProxyManagerImpl</param>
+                            </targetClasses>
+                            <targetTests>
+                                <param>org.apache.openjpa.util.PutCacheMapTest</param>
+                                <param>org.apache.openjpa.util.RemoveCacheMapTest</param>
+                                <param>org.apache.openjpa.util.PinCacheMapTest</param>
+                                <param>org.apache.openjpa.util.CopyCustomTest</param>
+                                <param>org.apache.openjpa.util.CopyArrayTest</param>
+                                <param>org.apache.openjpa.util.NewCustomProxyTest</param>
+                            </targetTests>
+                            <avoidCallsTo>
+                                <avoidCallsTo>java.util.logging</avoidCallsTo>
+                                <avoidCallsTo>org.apache.log4j</avoidCallsTo>
+                                <avoidCallsTo>org.slf4j</avoidCallsTo>
+                                <avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
+                            </avoidCallsTo>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>mutuation-coverage</id>
+                                <goals>
+                                    <goal>mutationCoverage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>data-flow-test</id>
             <build>
                 <plugins>
