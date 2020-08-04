@@ -13,4 +13,14 @@ public class BeanClass {
     public void setValue(Integer value) {
         this.value = value;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            BeanClass bean = (BeanClass) obj;
+            return this.value.equals(bean.getValue());
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

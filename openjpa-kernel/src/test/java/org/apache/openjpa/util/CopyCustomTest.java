@@ -8,10 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 
 @RunWith(Parameterized.class)
@@ -19,51 +16,68 @@ public class CopyCustomTest {
 
     private ProxyManagerImpl proxyManager;
     private Object object;
-    private Comparator<Object> comparator;
+    private boolean resultNull;
 
     public CopyCustomTest(TestInput testInput) {
         this.object = testInput.getObject();
-        this.comparator = testInput.getComparator();
+        this.resultNull = testInput.isResultNull();
     }
 
     @Parameterized.Parameters
     public static Collection<TestInput> getParameters(){
+        Random r = new Random();
         List<TestInput> testInputs = new ArrayList<>();
 
-        testInputs.add(new TestInput(null, null));
-        testInputs.add(new TestInput(new NonBeanClass(25, 36), null));
+        testInputs.add(new TestInput(null, true));
+        testInputs.add(new TestInput(new NonBeanClass(r.nextInt(), r.nextInt()), true));
 
         BeanClass beanClass = new BeanClass();
-        beanClass.setValue(36);
-        testInputs.add(new TestInput(beanClass, (o1, o2) -> {
-            BeanClass b1 = (BeanClass) o1;
-            BeanClass b2 = (BeanClass) o2;
+        beanClass.setValue(r.nextInt());
+        testInputs.add(new TestInput(beanClass, false));
 
-            if (b1.getValue().equals(b2.getValue())) {
-                return 0;
-            } else {
-                return -1;
-            }
-        }));
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(r.nextInt(), r.nextInt());
+        map.put(r.nextInt(), r.nextInt());
+        map.put(r.nextInt(), r.nextInt());
+
+        testInputs.add(new TestInput(map, false));
+
+        testInputs.add(new TestInput(new Date(), false));
+
+        testInputs.add(new TestInput(new GregorianCalendar(), false));
+
+        Proxy proxy = new ProxyManagerImpl().newDateProxy(Date.class);
+        testInputs.add(new TestInput(proxy, false));
+
+        List<Integer> list = new ArrayList<>();
+
+        list.add(r.nextInt());
+        list.add(r.nextInt());
+        list.add(r.nextInt());
+
+        testInputs.add(new TestInput(list, false));
+
+
+
         return testInputs;
 
     }
 
     private static class TestInput {
-        Object object;
-        Comparator<Object> comparator;
+        private Object object;
+        private boolean resultNull;
 
-        public TestInput(Object object, Comparator<Object> comparator) {
+        public TestInput(Object object, boolean resultNull) {
             this.object = object;
-            this.comparator = comparator;
+            this.resultNull = resultNull;
         }
 
         public Object getObject() {
             return object;
         }
 
-        public Comparator<Object> getComparator() {
-            return comparator;
+        public boolean isResultNull() {
+            return resultNull;
         }
     }
 
@@ -76,10 +90,10 @@ public class CopyCustomTest {
     public void copyCustomTest() {
         Object result = this.proxyManager.copyCustom(this.object);
 
-        if (comparator == null) {
+        if (this.resultNull) {
             Assert.assertNull(result);
         } else {
-            Assert.assertEquals(0, this.comparator.compare(this.object, result));
+            Assert.assertEquals(this.object, result);
         }
 
     }
