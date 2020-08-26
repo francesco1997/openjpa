@@ -2,13 +2,19 @@ package org.apache.openjpa.util;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 /*
 CacheMap maintains
@@ -31,6 +37,9 @@ public class RemoveCacheMapTest {
     private boolean pinned;
     private Integer cachedMaxMapSize;
     private Integer numObjectToInsert;
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 
     public RemoveCacheMapTest(TestInput testInput) {
@@ -116,13 +125,15 @@ public class RemoveCacheMapTest {
         for (int i = 0; i < this.numObjectToInsert; i++) {
             this.cacheMap.put(new Object(), new Object());
         }
-
+        this.cacheMap = spy(this.cacheMap);
 
     }
 
     @Test
     public void removeTest() {
         Object deletedValue = this.cacheMap.remove(this.key);
+        verify(this.cacheMap).writeLock();
+        verify(this.cacheMap).writeUnlock();
 
         if (this.hasPreviousValue) {
             Assert.assertEquals(this.value, deletedValue);

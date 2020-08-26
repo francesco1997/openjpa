@@ -2,14 +2,18 @@ package org.apache.openjpa.util;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
 /*
 CacheMap maintains
 a fixed number of cache entries, and an
@@ -32,6 +36,9 @@ public class PutCacheMapTest {
     private boolean pinned;
     private Integer cachedMaxMapSize;
     private Integer numObjectToInsert;
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 
     public PutCacheMapTest(TestInput testInput) {
@@ -118,11 +125,16 @@ public class PutCacheMapTest {
         if (this.pinned) {
             this.cacheMap.pin(this.key);
         }
+
+        this.cacheMap = spy(this.cacheMap);
+
     }
 
     @Test
     public void putTest() {
         Object previousValue = this.cacheMap.put(this.key, this.value);
+        verify(this.cacheMap).writeLock();
+        verify(this.cacheMap).writeUnlock();
 
         if (this.hasPreviousValue && this.cachedMaxMapSize != 0) {
             Assert.assertEquals(this.previousValue, previousValue);
@@ -133,6 +145,7 @@ public class PutCacheMapTest {
         Object getValue = this.cacheMap.get(this.key);
 
         Assert.assertEquals(this.value, getValue);
+
 
     }
 
