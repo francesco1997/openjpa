@@ -2,13 +2,18 @@ package org.apache.openjpa.util;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static org.mockito.Mockito.*;
 
 /*
 CacheMap maintains
@@ -30,6 +35,9 @@ public class PinCacheMapTest {
     private boolean hasPreviousValue;
     private boolean pinned;
     private boolean expectedResult;
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 
     public PinCacheMapTest(TestInput testInput) {
@@ -104,11 +112,15 @@ public class PinCacheMapTest {
         if (this.pinned) {
             this.cacheMap.pin(this.key);
         }
+
+        this.cacheMap = spy(this.cacheMap);
     }
 
     @Test
     public void pinTest() {
         boolean result = this.cacheMap.pin(this.key);
+        verify(this.cacheMap).writeLock();
+        verify(this.cacheMap).writeUnlock();
 
         Assert.assertEquals(this.expectedResult, result);
 
